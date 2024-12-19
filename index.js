@@ -36,9 +36,39 @@ app.post("/users", async (req, res) => {
 });
 
 app.post("/find",async (req,res)=> {
-  const {email,pass} = req.body
-  
-})
+  const {email,pass} = req.body;
+  console.log(email,pass)
+ const user = await db.collection("users").findOne({email:email,pass:pass});
+ let flag =false;
+ if (user){
+    flag = true;
+    res.json({ message: flag});
+ } else{
+    res.json({message : flag});
+ }
+
+ })
+
+
+ 
+
+ app.post("/cart", async(req,res)=>{
+  const {cart,grandtotal} = req.body;
+  const data ={
+    cart : cart,
+    orderVal : grandtotal,
+  };
+  const newCart = await db.collection("cart").insertOne(data);
+  res.status(200).json(newCart);
+ })
+
+ app.get("/cart", async (req, res) => {
+  const items = await db.collection("cart").find().toArray();
+  res.status(200).json(items);
+});
+
+
+
 
 app.listen(8080, () => {
   console.log("Server started at port 8080");
